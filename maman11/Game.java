@@ -1,5 +1,5 @@
 import java.util.Scanner;
-
+  
 /**
  * A simple Rock, Paper, Scissors game that allows two players to compete.
  * Players enter their choice as a single character:
