@@ -1,0 +1,28 @@
+********** Test Weight - Started **********
+
+1. Testing Constructors and toString:
+	w1:3.01
+	w2:3.01
+	w3:4.003
+
+2. Testing accessors :
+	w1:3.01
+	kilos of w1:3
+	grams of w1:10
+
+3. Testing equals method:
+	w3:4.003
+	w4:4.003
+	w3 is the same weight as w4
+
+4. Testing lighter method:
+	w3 isn't lighter than w1
+
+5. Testing heavier method:
+	w3 is heavier than w1
+
+6. Testing add method:
+	w1:3.01
+	Adding 500 grams to w1 returns the weight : 3.51
+
+********** Test Weight - Finished **********

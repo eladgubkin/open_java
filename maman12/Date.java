@@ -1,5 +1,14 @@
 package maman12;
 
+/**
+ * Represents a date with day, month, and year components.
+ * This class provides methods to create dates, validate them,
+ * and perform operations such as comparison and calculating
+ * the difference in days between two dates.
+ * 
+ * @author (Elad Gubkin)
+ * @version (07-12-2024)
+ */
 public class Date {
 
   private int _day; // Day of the month (1–31)
