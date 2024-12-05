@@ -11,13 +11,18 @@ package maman12;
  * @version (07-12-2024)
  */
 public class Weight {
-  private int _kilos; // Always above 0
-  private int _grams; // Between 0 and 999
+  private static final int MIN_KILOS = 1;
+  private static final int MAX_GRAMS = 999;
+  private static final int MIN_GRAMS = 0;
+  private static final int GRAMS_IN_A_KILO = 1000;
+
+  private int _kilos;
+  private int _grams;
 
   // Constructor 1: Initializes weight with kilos and grams
   public Weight(int kilos, int grams) {
-    this._kilos = Math.max(kilos, 1); // Set to 1 if invalid
-    this._grams = (grams >= 0 && grams < 1000) ? grams : 0; // Set to 0 if invalid
+    this._kilos = Math.max(kilos, MIN_KILOS); // Set to MIN_KILOS if invalid
+    this._grams = (grams >= MIN_GRAMS && grams <= MAX_GRAMS) ? grams : MIN_GRAMS; // Set to MIN_GRAMS if invalid
   }
 
   // Constructor 2: Initializes weight by copying another Weight object
@@ -28,15 +33,15 @@ public class Weight {
 
   // Constructor 3: Initializes weight using total grams
   public Weight(int totalGrams) {
-    if (totalGrams >= 0) {
-      this._kilos = totalGrams / 1000; // Convert to kilograms
-      this._grams = totalGrams % 1000; // Calculate remaining grams
-      if (this._kilos < 1) {
-        this._kilos = 1; // Ensure at least 1 kilogram
+    if (totalGrams >= MIN_GRAMS) {
+      this._kilos = totalGrams / GRAMS_IN_A_KILO; // Convert to kilograms
+      this._grams = totalGrams % GRAMS_IN_A_KILO; // Calculate remaining grams
+      if (this._kilos < MIN_KILOS) {
+        this._kilos = MIN_KILOS; // Ensure at least MIN_KILOS
       }
     } else {
-      this._kilos = 1;
-      this._grams = 0; // Default values for invalid input
+      this._kilos = MIN_KILOS;
+      this._grams = MIN_GRAMS; // Default values for invalid input
     }
   }
 
@@ -88,12 +93,12 @@ public class Weight {
 
   // Adds a given number of grams and returns a new Weight object
   public Weight add(int grams) {
-    int totalGrams = this._kilos * 1000 + this._grams + grams; // Calculate total grams
-    if (totalGrams < 0) {
+    int totalGrams = this._kilos * GRAMS_IN_A_KILO + this._grams + grams; // Calculate total grams
+    if (totalGrams < MIN_GRAMS) {
       // If the result is invalid, return a copy of the current object
-      return new Weight(this._kilos * 1000 + this._grams);
+      return new Weight(this._kilos * GRAMS_IN_A_KILO + this._grams);
     }
 
-    return new Weight(totalGrams); // Return the new weight
+    return new Weight(totalGrams);
   }
 }

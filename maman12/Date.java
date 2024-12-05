@@ -137,6 +137,12 @@ public class Date {
 
   // Validates if the given day, month, and year form a valid date.
   private boolean isValidDate(int day, int month, int year) {
+    // Define constants for maximum days in each month
+    final int MAX_DAYS_IN_FEBRUARY = 28;
+    final int MAX_DAYS_IN_FEBRUARY_LEAP = 29;
+    final int MAX_DAYS_IN_30_DAY_MONTH = 30;
+    final int MAX_DAYS_IN_31_DAY_MONTH = 31;
+
     if (year < 1000 || year > 9999 || month < 1 || month > 12 || day < 1) {
       return false;
     }
@@ -144,11 +150,11 @@ public class Date {
     int maxDays;
 
     if (month == 2) {
-      maxDays = isLeapYear(year) ? 29 : 28; // February
+      maxDays = isLeapYear(year) ? MAX_DAYS_IN_FEBRUARY_LEAP : MAX_DAYS_IN_FEBRUARY; // February
     } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-      maxDays = 30; // Apr, Jun, Sep, Nov
+      maxDays = MAX_DAYS_IN_30_DAY_MONTH; // Apr, Jun, Sep, Nov
     } else {
-      maxDays = 31; // Jan, Mar, May, Jul, Aug, Oct, Dec
+      maxDays = MAX_DAYS_IN_31_DAY_MONTH; // Jan, Mar, May, Jul, Aug, Oct, Dec
     }
 
     return day <= maxDays; // Check if the day is valid for the month

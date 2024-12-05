@@ -1,0 +1,85 @@
+********** Test Baby - Started **********
+
+
+1. Testing Constructors and toString:
+
+baby b1 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 3.6
+
+baby b2 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 3.6
+
+
+2. Testing accessors and mutators:
+
+baby b1 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 4.04
+
+
+first name of b1:Don
+last name of b1:Abraham
+id of b1:123456789
+date of birth of b1:03/05/2024
+birth weight of b1:3.6
+current weight of b1:4.04
+
+
+3. Testing equals method:
+
+baby b1 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 4.04
+
+
+baby b2 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 3.6
+
+
+b1 is the same baby as b2
+
+4. Testing areTwins method:
+	b1 and b2 are not Twins
+
+5. Testing heavier method:
+	b1 is heavier b2
+
+6. Testing updateCurrentWeight method - adding 440 grams to b2:
+
+baby b2 is:
+Name: Don Abraham
+Id: 123456789
+Date of Birth: 03/05/2024
+Birth Weight: 3.6
+Current Weight: 4.04
+
+
+7. Testing older method:
+	b1 is not older b2
+
+8. Testing isWeightInValidRange method:
+	The result of weight in valid of a baby that was born in: 03/05/2024
+	and his weight when he was born was: 3.6 and now after 183 days, his weight is 4.04 is : 2
+
+	The result of weight in valid of a baby that was born in: 03/05/2024
+	and his weight when he was born was: 3.6 and now after 30 days, his weight is 4.04 is : 3
+
+********** Test Baby - Finished **********
