@@ -16,17 +16,23 @@ public class Ex13 {
     // System.out.println("specialArr(arr2, med2): " +
     // Arrays.toString(specialArr2));
 
-    final int[] exampleArr = { 1, -3, 6, 2, 0, 15 };
-    final int[] arr1 = { 1, 1, 1, 1 };
-    final int[] arr2 = { 4, 3, 2, 1 };
-    final int[] arr3 = { 2, -2, 0, 1, 3, -1, 5 };
-    final int[] arr4 = { 14, 12, 11, 9, 8, 7 };
+    // final int[] exampleArr = { 1, -3, 6, 2, 0, 15 };
+    // final int[] arr1 = { 1, 1, 1, 1 };
+    // final int[] arr2 = { 4, 3, 2, 1 };
+    // final int[] arr3 = { 2, -2, 0, 1, 3, -1, 5 };
+    // final int[] arr4 = { 14, 12, 11, 9, 8, 7 };
 
-    System.out.println("first(exampleArr): " + first(exampleArr));
-    System.out.println("first(arr1): " + first(arr1));
-    System.out.println("first(arr2): " + first(arr2));
-    System.out.println("first(arr3): " + first(arr3));
-    System.out.println("first(arr4): " + first(arr4));
+    // System.out.println("first(exampleArr): " + first(exampleArr));
+    // System.out.println("first(arr1): " + first(arr1));
+    // System.out.println("first(arr2): " + first(arr2));
+    // System.out.println("first(arr3): " + first(arr3));
+    // System.out.println("first(arr4): " + first(arr4));
+
+    int[] arr = { 1, 2, 3, 4, 1 };
+    System.out.println(longestNearlyPal(arr)); // Expected Output: 4
+
+    int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
+    System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
 
   }
 
@@ -73,6 +79,9 @@ public class Ex13 {
 
   /**
    * Returns the smallest missing positive integer from the array.
+   *
+   * Time Complexity: O(n) + O(n) + O(n) = O(n)
+   * Space Complexity: O(1)
    * 
    * @param arr the input array of integers
    */
@@ -102,6 +111,49 @@ public class Ex13 {
     }
 
     return n + 1; // All numbers from 1 to n are present
+  }
+
+  public static int longestNearlyPal(int[] arr) {
+    return helper(arr, 0, arr.length - 1, true);
+  }
+
+  private static int helper(int[] arr, int left, int right, boolean mismatchAllowed) {
+    // Base case: When the left pointer exceeds the right pointer
+    if (left > right) {
+      return 0; // Return 0 when the subarray is exhausted
+    }
+
+    // Base case: If we are left with a single element
+    if (left == right) {
+      return 1; // A single element is trivially palindromic
+    }
+
+    // Case 1: If the current elements at both ends match
+    if (arr[left] == arr[right]) {
+      // Include both elements in the subsequence and continue with the rest
+      return 2 + helper(arr, left + 1, right - 1, mismatchAllowed);
+    }
+
+    // Case 2: If a mismatch is allowed (only one mismatch allowed)
+    if (mismatchAllowed) {
+      // Option 1: Treat this as a mismatch (skip both elements)
+      int case1 = helper(arr, left + 1, right - 1, false); // Mark mismatch as not allowed
+
+      // Option 2: Skip the left element (allowing further mismatches)
+      int case2 = helper(arr, left + 1, right, mismatchAllowed);
+
+      // Option 3: Skip the right element (allowing further mismatches)
+      int case3 = helper(arr, left, right - 1, mismatchAllowed);
+
+      // Return the maximum length from these three options
+      return Math.max(case1, Math.max(case2, case3));
+    }
+
+    // Case 3: If no mismatch is allowed, we can only skip one element (from either
+    // left or right)
+    return Math.max(
+        helper(arr, left + 1, right, mismatchAllowed),
+        helper(arr, left, right - 1, mismatchAllowed));
   }
 
   // DELETE BEFORE SUBMISSION
