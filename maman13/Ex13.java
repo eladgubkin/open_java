@@ -28,11 +28,11 @@ public class Ex13 {
     // System.out.println("first(arr3): " + first(arr3));
     // System.out.println("first(arr4): " + first(arr4));
 
-    int[] arr = { 1, 2, 3, 4, 1 };
-    System.out.println(longestNearlyPal(arr)); // Expected Output: 4
+    // int[] arr = { 1, 2, 3, 4, 1 };
+    // System.out.println(longestNearlyPal(arr)); // Expected Output: 4
 
-    // int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
-    // System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
+    int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
+    System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
 
     // int[][] a = {
     // { 1, 2 },
@@ -141,34 +141,45 @@ public class Ex13 {
   }
 
   public static int longestNearlyPal(int[] arr) {
-    return longestNearlyPalHelper(arr, 0, arr.length - 1, true);
+    return findLongestNearlyPal(arr, 0, arr.length - 1);
   }
 
-  private static int longestNearlyPalHelper(int[] arr, int left, int right, boolean canRemove) {
-    System.out.println("Checking range: [" + left + ", " + right + "], canRemove: " + canRemove);
-    if (left > right) {
+  private static int findLongestNearlyPal(int[] arr, int start, int end) {
+    // Base case: If the subarray has no elements or one element
+    if (start > end)
       return 0;
-    }
-    if (left == right) {
+    if (start == end)
       return 1;
+
+    // Check if the current subarray is palindromic
+    if (isPalindromic(arr, start, end)) {
+      return end - start + 1;
     }
 
-    if (arr[left] == arr[right]) {
-      System.out.println("Match at indices " + left + " and " + right);
-      return 2 + longestNearlyPalHelper(arr, left + 1, right - 1, canRemove);
+    // Check if removing any single element makes the subarray palindromic
+    for (int i = start; i <= end; i++) {
+      if (isPalindromic(arr, start, i - 1) && isPalindromic(arr, i + 1, end)) {
+        return end - start; // Removing one element
+      }
     }
 
-    if (canRemove) {
-      System.out.println("Removing one element at " + left + " or " + right);
-      // Try removing the left element
-      int removeLeft = longestNearlyPalHelper(arr, left + 1, right, true);
-      // Try removing the right element
-      int removeRight = longestNearlyPalHelper(arr, left, right - 1, true);
-      // Return the maximum of both cases after trying to remove one element
-      return Math.max(removeLeft, removeRight);
-    }
+    // Recursive calls: Explore reducing the subarray from both sides
+    int lengthWithoutStart = findLongestNearlyPal(arr, start + 1, end);
+    int lengthWithoutEnd = findLongestNearlyPal(arr, start, end - 1);
 
-    return 0;
+    // Return the longest result found
+    return Math.max(lengthWithoutStart, lengthWithoutEnd);
+  }
+
+  private static boolean isPalindromic(int[] arr, int start, int end) {
+    // Recursive check for palindromic condition
+    if (start >= end)
+      return true;
+    if (start < 0 || end >= arr.length)
+      return false;
+    if (arr[start] != arr[end])
+      return false;
+    return isPalindromic(arr, start + 1, end - 1);
   }
 
   public static int extreme(int[][] mat) {
@@ -177,11 +188,6 @@ public class Ex13 {
 
   private static int findExtreme(int[][] mat, int i, int j, int currentMax) {
     int n = mat.length;
-
-    // If out of bounds, return Integer.MAX_VALUE to ignore this path.
-    if (i < 0 || j < 0 || i >= n || j >= n) {
-      return Integer.MAX_VALUE;
-    }
 
     // Update the maximum value encountered so far in this path.
     currentMax = Math.max(currentMax, mat[i][j]);
@@ -196,10 +202,10 @@ public class Ex13 {
     mat[i][j] = -1;
 
     // Recurse to neighbors (right, left, down, up).
-    int right = (j + 1 < n && mat[i][j + 1] != -1) ? findExtreme(mat, i, j + 1, currentMax) : Integer.MAX_VALUE;
-    int left = (j - 1 >= 0 && mat[i][j - 1] != -1) ? findExtreme(mat, i, j - 1, currentMax) : Integer.MAX_VALUE;
-    int down = (i + 1 < n && mat[i + 1][j] != -1) ? findExtreme(mat, i + 1, j, currentMax) : Integer.MAX_VALUE;
-    int up = (i - 1 >= 0 && mat[i - 1][j] != -1) ? findExtreme(mat, i - 1, j, currentMax) : Integer.MAX_VALUE;
+    int right = (j + 1 < n && mat[i][j + 1] != -1) ? findExtreme(mat, i, j + 1, currentMax) : 0;
+    int left = (j - 1 >= 0 && mat[i][j - 1] != -1) ? findExtreme(mat, i, j - 1, currentMax) : 0;
+    int down = (i + 1 < n && mat[i + 1][j] != -1) ? findExtreme(mat, i + 1, j, currentMax) : 0;
+    int up = (i - 1 >= 0 && mat[i - 1][j] != -1) ? findExtreme(mat, i - 1, j, currentMax) : 0;
 
     // Restore the original value of the current cell.
     mat[i][j] = temp;
