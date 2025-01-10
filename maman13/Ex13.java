@@ -31,8 +31,35 @@ public class Ex13 {
     int[] arr = { 1, 2, 3, 4, 1 };
     System.out.println(longestNearlyPal(arr)); // Expected Output: 4
 
-    int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
-    System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
+    // int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
+    // System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
+
+    // int[][] a = {
+    // { 1, 2 },
+    // { 3, 4 }
+    // };
+
+    // int[][] b = {
+    // { 1, 3 },
+    // { 4, 2 }
+    // };
+
+    // int[][] c = {
+    // { 4, 5, 8, 2 },
+    // { 3, 12, 7, 16 },
+    // { 13, 1, 10, 14 },
+    // { 15, 11, 9, 6 }
+    // };
+
+    // int[][] d = {
+    // { 4, 5, 8, 2 },
+    // { 3, 12, 16, 7 },
+    // { 13, 1, 10, 14 },
+    // { 15, 11, 9, 6 }
+    // };
+
+    // System.out.println(extreme(a));
+    // System.out.println(extreme(b));
 
   }
 
@@ -114,46 +141,71 @@ public class Ex13 {
   }
 
   public static int longestNearlyPal(int[] arr) {
-    return helper(arr, 0, arr.length - 1, true);
+    return longestNearlyPalHelper(arr, 0, arr.length - 1, true);
   }
 
-  private static int helper(int[] arr, int left, int right, boolean mismatchAllowed) {
-    // Base case: When the left pointer exceeds the right pointer
+  private static int longestNearlyPalHelper(int[] arr, int left, int right, boolean canRemove) {
+    System.out.println("Checking range: [" + left + ", " + right + "], canRemove: " + canRemove);
     if (left > right) {
-      return 0; // Return 0 when the subarray is exhausted
+      return 0;
     }
-
-    // Base case: If we are left with a single element
     if (left == right) {
-      return 1; // A single element is trivially palindromic
+      return 1;
     }
 
-    // Case 1: If the current elements at both ends match
     if (arr[left] == arr[right]) {
-      // Include both elements in the subsequence and continue with the rest
-      return 2 + helper(arr, left + 1, right - 1, mismatchAllowed);
+      System.out.println("Match at indices " + left + " and " + right);
+      return 2 + longestNearlyPalHelper(arr, left + 1, right - 1, canRemove);
     }
 
-    // Case 2: If a mismatch is allowed (only one mismatch allowed)
-    if (mismatchAllowed) {
-      // Option 1: Treat this as a mismatch (skip both elements)
-      int case1 = helper(arr, left + 1, right - 1, false); // Mark mismatch as not allowed
-
-      // Option 2: Skip the left element (allowing further mismatches)
-      int case2 = helper(arr, left + 1, right, mismatchAllowed);
-
-      // Option 3: Skip the right element (allowing further mismatches)
-      int case3 = helper(arr, left, right - 1, mismatchAllowed);
-
-      // Return the maximum length from these three options
-      return Math.max(case1, Math.max(case2, case3));
+    if (canRemove) {
+      System.out.println("Removing one element at " + left + " or " + right);
+      // Try removing the left element
+      int removeLeft = longestNearlyPalHelper(arr, left + 1, right, true);
+      // Try removing the right element
+      int removeRight = longestNearlyPalHelper(arr, left, right - 1, true);
+      // Return the maximum of both cases after trying to remove one element
+      return Math.max(removeLeft, removeRight);
     }
 
-    // Case 3: If no mismatch is allowed, we can only skip one element (from either
-    // left or right)
-    return Math.max(
-        helper(arr, left + 1, right, mismatchAllowed),
-        helper(arr, left, right - 1, mismatchAllowed));
+    return 0;
+  }
+
+  public static int extreme(int[][] mat) {
+    return findExtreme(mat, 0, 0, Integer.MIN_VALUE);
+  }
+
+  private static int findExtreme(int[][] mat, int i, int j, int currentMax) {
+    int n = mat.length;
+
+    // If out of bounds, return Integer.MAX_VALUE to ignore this path.
+    if (i < 0 || j < 0 || i >= n || j >= n) {
+      return Integer.MAX_VALUE;
+    }
+
+    // Update the maximum value encountered so far in this path.
+    currentMax = Math.max(currentMax, mat[i][j]);
+
+    // If reached the bottom-right corner, return the maximum value for this path.
+    if (i == n - 1 && j == n - 1) {
+      return currentMax;
+    }
+
+    // Temporarily mark the current cell as visited by using a negative value.
+    int temp = mat[i][j];
+    mat[i][j] = -1;
+
+    // Recurse to neighbors (right, left, down, up).
+    int right = (j + 1 < n && mat[i][j + 1] != -1) ? findExtreme(mat, i, j + 1, currentMax) : Integer.MAX_VALUE;
+    int left = (j - 1 >= 0 && mat[i][j - 1] != -1) ? findExtreme(mat, i, j - 1, currentMax) : Integer.MAX_VALUE;
+    int down = (i + 1 < n && mat[i + 1][j] != -1) ? findExtreme(mat, i + 1, j, currentMax) : Integer.MAX_VALUE;
+    int up = (i - 1 >= 0 && mat[i - 1][j] != -1) ? findExtreme(mat, i - 1, j, currentMax) : Integer.MAX_VALUE;
+
+    // Restore the original value of the current cell.
+    mat[i][j] = temp;
+
+    // Return the minimum of the maximum values from all paths.
+    return Math.min(Math.min(right, left), Math.min(down, up));
   }
 
   // DELETE BEFORE SUBMISSION
