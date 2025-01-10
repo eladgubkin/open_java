@@ -1,68 +1,10 @@
-package maman13;
-
-import java.util.Arrays;
-
+/**
+ * Maman13
+ * 
+ * @author (Elad Gubkin)
+ * @version (11-01-2025)
+ */
 public class Ex13 {
-
-  public static void main(String[] args) {
-    // final int[] arr1 = { 4, -5, -3, 1, 2, 7, 0 };
-    // final int[] arr2 = { 4, -5, -3, 1, 2, 7, 9, 0 };
-
-    // final int[] specialArr1 = specialArr(arr1, calcMedianForArr(arr1));
-    // final int[] specialArr2 = specialArr(arr2, calcMedianForArr(arr2));
-
-    // System.out.println("specialArr(arr1, med1): " +
-    // Arrays.toString(specialArr1));
-    // System.out.println("specialArr(arr2, med2): " +
-    // Arrays.toString(specialArr2));
-
-    // final int[] exampleArr = { 1, -3, 6, 2, 0, 15 };
-    // final int[] arr1 = { 1, 1, 1, 1 };
-    // final int[] arr2 = { 4, 3, 2, 1 };
-    // final int[] arr3 = { 2, -2, 0, 1, 3, -1, 5 };
-    // final int[] arr4 = { 14, 12, 11, 9, 8, 7 };
-
-    // System.out.println("first(exampleArr): " + first(exampleArr));
-    // System.out.println("first(arr1): " + first(arr1));
-    // System.out.println("first(arr2): " + first(arr2));
-    // System.out.println("first(arr3): " + first(arr3));
-    // System.out.println("first(arr4): " + first(arr4));
-
-    // int[] arr = { 1, 2, 3, 4, 1 };
-    // System.out.println(longestNearlyPal(arr)); // Expected Output: 4
-
-    int[] arr2 = { 1, 1, 4, 10, 10, 4, 3, 10, 10 };
-    System.out.println(longestNearlyPal(arr2)); // Expected Output: 6
-
-    // int[][] a = {
-    // { 1, 2 },
-    // { 3, 4 }
-    // };
-
-    // int[][] b = {
-    // { 1, 3 },
-    // { 4, 2 }
-    // };
-
-    // int[][] c = {
-    // { 4, 5, 8, 2 },
-    // { 3, 12, 7, 16 },
-    // { 13, 1, 10, 14 },
-    // { 15, 11, 9, 6 }
-    // };
-
-    // int[][] d = {
-    // { 4, 5, 8, 2 },
-    // { 3, 12, 16, 7 },
-    // { 13, 1, 10, 14 },
-    // { 15, 11, 9, 6 }
-    // };
-
-    // System.out.println(extreme(a));
-    // System.out.println(extreme(b));
-
-  }
-
   /**
    * Constructs a special array using the median of the input array.
    * 
@@ -140,46 +82,52 @@ public class Ex13 {
     return n + 1; // All numbers from 1 to n are present
   }
 
+  /**
+   * Returns the length of the longest nearly palindrome subarray.
+   * 
+   * @param arr the input array of integers
+   * @return the length of the longest nearly palindrome subarray
+   */
   public static int longestNearlyPal(int[] arr) {
-    return findLongestNearlyPal(arr, 0, arr.length - 1);
+    return findLongestNearlyPal(arr, 0, arr.length - 1, false);
   }
 
-  private static int findLongestNearlyPal(int[] arr, int start, int end) {
-    // Base case: If the subarray has no elements or one element
-    if (start > end)
+  private static int findLongestNearlyPal(int[] arr, int start, int end, boolean removed) {
+    if (start > end) {
       return 0;
-    if (start == end)
-      return 1;
+    }
 
-    // Check if the current subarray is palindromic
-    if (isPalindromic(arr, start, end)) {
+    if (isNearlyPalindrome(arr, start, end, removed)) {
       return end - start + 1;
     }
 
-    // Check if removing any single element makes the subarray palindromic
-    for (int i = start; i <= end; i++) {
-      if (isPalindromic(arr, start, i - 1) && isPalindromic(arr, i + 1, end)) {
-        return end - start; // Removing one element
-      }
+    int removeStart = 0, removeEnd = 0;
+
+    if (start + 1 <= end) {
+      removeStart = findLongestNearlyPal(arr, start + 1, end, removed);
     }
 
-    // Recursive calls: Explore reducing the subarray from both sides
-    int lengthWithoutStart = findLongestNearlyPal(arr, start + 1, end);
-    int lengthWithoutEnd = findLongestNearlyPal(arr, start, end - 1);
+    if (start <= end - 1) {
+      removeEnd = findLongestNearlyPal(arr, start, end - 1, removed);
+    }
 
-    // Return the longest result found
-    return Math.max(lengthWithoutStart, lengthWithoutEnd);
+    return Math.max(removeStart, removeEnd);
   }
 
-  private static boolean isPalindromic(int[] arr, int start, int end) {
-    // Recursive check for palindromic condition
-    if (start >= end)
+  private static boolean isNearlyPalindrome(int[] arr, int start, int end, boolean removed) {
+    if (start >= end) {
       return true;
-    if (start < 0 || end >= arr.length)
-      return false;
-    if (arr[start] != arr[end])
-      return false;
-    return isPalindromic(arr, start + 1, end - 1);
+    }
+
+    if (arr[start] == arr[end]) {
+      return isNearlyPalindrome(arr, start + 1, end - 1, removed);
+    } else if (!removed) {
+      // Try removing one element from either side if not already removed
+      return isNearlyPalindrome(arr, start + 1, end, true) || isNearlyPalindrome(arr, start, end - 1, true);
+    }
+
+    return false;
+
   }
 
   public static int extreme(int[][] mat) {
@@ -189,6 +137,10 @@ public class Ex13 {
   private static int findExtreme(int[][] mat, int i, int j, int currentMax) {
     int n = mat.length;
 
+    if (i < 0 || j < 0 || i >= n || j >= n) {
+      return Integer.MAX_VALUE;
+    }
+
     // Update the maximum value encountered so far in this path.
     currentMax = Math.max(currentMax, mat[i][j]);
 
@@ -197,35 +149,21 @@ public class Ex13 {
       return currentMax;
     }
 
-    // Temporarily mark the current cell as visited by using a negative value.
+    // temp mark the current cell as visited by using a negative value.
     int temp = mat[i][j];
     mat[i][j] = -1;
 
     // Recurse to neighbors (right, left, down, up).
-    int right = (j + 1 < n && mat[i][j + 1] != -1) ? findExtreme(mat, i, j + 1, currentMax) : 0;
-    int left = (j - 1 >= 0 && mat[i][j - 1] != -1) ? findExtreme(mat, i, j - 1, currentMax) : 0;
-    int down = (i + 1 < n && mat[i + 1][j] != -1) ? findExtreme(mat, i + 1, j, currentMax) : 0;
-    int up = (i - 1 >= 0 && mat[i - 1][j] != -1) ? findExtreme(mat, i - 1, j, currentMax) : 0;
+    int right = (j + 1 < n && mat[i][j + 1] != -1) ? findExtreme(mat, i, j + 1, currentMax) : Integer.MAX_VALUE;
+    int left = (j - 1 >= 0 && mat[i][j - 1] != -1) ? findExtreme(mat, i, j - 1, currentMax) : Integer.MAX_VALUE;
+    int down = (i + 1 < n && mat[i + 1][j] != -1) ? findExtreme(mat, i + 1, j, currentMax) : Integer.MAX_VALUE;
+    int up = (i - 1 >= 0 && mat[i - 1][j] != -1) ? findExtreme(mat, i - 1, j, currentMax) : Integer.MAX_VALUE;
 
     // Restore the original value of the current cell.
     mat[i][j] = temp;
 
     // Return the minimum of the maximum values from all paths.
     return Math.min(Math.min(right, left), Math.min(down, up));
-  }
-
-  // DELETE BEFORE SUBMISSION
-  private static int calcMedianForArr(int[] arr) {
-    Arrays.sort(arr);
-    final int len = arr.length;
-
-    if (len % 2 == 0) {
-      // For even length, return the second middle number
-      return arr[len / 2];
-    } else {
-      // For odd length, return the middle number
-      return arr[len / 2];
-    }
   }
 
 }
